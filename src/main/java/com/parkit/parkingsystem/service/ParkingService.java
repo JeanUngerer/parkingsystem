@@ -37,17 +37,20 @@ public class ParkingService {
 
                 Date inTime = new Date();
                 Ticket ticket = new Ticket();
-                //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+                //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, IS_RECUIRING)
                 //ticket.setId(ticketID);
                 ticket.setParkingSpot(parkingSpot);
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(0);
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
-                ticketDAO.saveTicket(ticket);
-                System.out.println("Generated Ticket and saved in DB");
-                System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
-                System.out.println("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
+                ticket.setRecuringUser(ticketDAO.isRecuiring(vehicleRegNumber));
+                if (!ticketDAO.isPresent(vehicleRegNumber)) {
+	                ticketDAO.saveTicket(ticket);
+	                System.out.println("Generated Ticket and saved in DB");
+	                System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
+	                System.out.println("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
+                } else {System.out.println("A vehicule using this registration number is already present");}
             }
         }catch(Exception e){
             logger.error("Unable to process incoming vehicle",e);

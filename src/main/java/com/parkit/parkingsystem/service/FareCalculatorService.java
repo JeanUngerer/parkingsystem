@@ -1,6 +1,7 @@
 package com.parkit.parkingsystem.service;
 
 import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
@@ -17,23 +18,33 @@ public class FareCalculatorService {
 
         //TODO: Some tests are failing here. Need to check if this logic is correct
         long duration = outTime - inTime;
-
-        switch (ticket.getParkingSpot().getParkingType()){
-            case CAR: {
-                ticket.setPrice(priceGivenParkingDurationAndRate(duration, Fare.CAR_RATE_PER_HOUR));
-                break;
-            }
-            case BIKE: {
-                ticket.setPrice(priceGivenParkingDurationAndRate(duration, Fare.BIKE_RATE_PER_HOUR));
-                break;
-            }
-            default: throw new IllegalArgumentException("Unkown Parking Type");
-        }
+        
+        ticket.setPrice(priceGivenDurationAndType(duration, ticket.getParkingSpot().getParkingType(), ticket.getRecuiringUser()));
     }
+
     
-    private double priceGivenParkingDurationAndRate (long duration, double rate) {
+    
+   private double priceGivenDurationAndType(long duration, ParkingType pType, boolean recuring) {
+       switch (pType){
+	       case CAR: {
+	           return priceGivenParkingDurationAndRate(duration, Fare.CAR_RATE_PER_HOUR, recuring);
+	           
+	       }
+	       case BIKE: {
+	           return priceGivenParkingDurationAndRate(duration, Fare.BIKE_RATE_PER_HOUR, recuring);
+	           
+	       }
+	       default: throw new IllegalArgumentException("Unkown Parking Type");
+       }
+   }
+    private double priceGivenParkingDurationAndRate (long duration, double rate, boolean recuring) {
     	
-    	
-    	return duration/3600000 * rate;
+    	if (duration < 30 * 60 * 1000) {
+    		return 0;
+    	}
+    	if (recuring) {
+    		return duration/3600 / 1000 * rate * 95 / 100;
+    	}
+    	return duration/3600 / 1000 * rate;
     }
 }
