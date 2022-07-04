@@ -62,5 +62,13 @@ public class ParkingDataBaseIT {
         parkingService.processExitingVehicle();
         //TODO: check that the fare generated and out time are populated correctly in the database
     }
+    
+    @Test
+    public void testParkingGetPlaces(){
+        String querry = "select count(ID) from parking";
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processExitingVehicle();
+        //TODO: check that the fare generated and out time are populated correctly in the database
+    }
 
 }

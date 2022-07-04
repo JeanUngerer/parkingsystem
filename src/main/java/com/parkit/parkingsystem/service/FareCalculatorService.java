@@ -24,6 +24,10 @@ public class FareCalculatorService {
 
     
     
+    private long duratinCalc(long start, long end) {
+    	return 0;
+    }
+    
    private double priceGivenDurationAndType(long duration, ParkingType pType, boolean recuring) {
        switch (pType){
 	       case CAR: {
