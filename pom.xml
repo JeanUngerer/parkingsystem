@@ -52,13 +52,13 @@
         <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.5</version>
+            <version>0.8.8</version>
             <type>maven-plugin</type>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.0.0</version>
+            <version>3.3.0</version>
         </dependency>
     </dependencies>
 
@@ -67,14 +67,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <!-- <phase>package</phase>
                         <goals>
                             <goal>single</goal>
-                        </goals>
+                        </goals>-->
                         <configuration>
-                        <skipTests>${skipTests}</skipTests>
+                        <!-- <skipTests>${skipTests}</skipTests>-->
                             <archive>
                                 <manifest>
                                     <mainClass>
@@ -101,9 +102,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <excludes>
-                        <exclude>**/*IT.java</exclude>
-                    </excludes>
+
                 </configuration>
                 <executions>
                     <execution>
@@ -117,7 +116,7 @@
                                 <exclude>none</exclude>
                             </excludes>
                             <includes>
-                                <include>**/*IT.java</include>
+                                <include>**/*.java</include>
                             </includes>
                         </configuration>
                     </execution>
@@ -126,7 +125,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.5</version>
+                <version>0.8.8</version>
                 <executions>
                     <execution>
                         <goals>
