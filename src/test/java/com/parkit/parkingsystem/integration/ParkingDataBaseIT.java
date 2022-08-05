@@ -1,6 +1,10 @@
 package com.parkit.parkingsystem.integration;
 
 import com.parkit.parkingsystem.constants.DBConstants;
+
+
+
+
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
@@ -29,6 +33,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+
+
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
 
@@ -45,17 +51,18 @@ public class ParkingDataBaseIT {
 
     @BeforeAll
     private static void setUp() throws Exception{
+    	
         parkingSpotDAO = new ParkingSpotDAO();
         parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
         ticketDAO = new TicketDAO();
         ticketDAO.dataBaseConfig = dataBaseTestConfig;
         dataBasePrepareService = new DataBasePrepareService();
+        
+
     }
 
     @BeforeEach
     private void setUpPerTest() throws Exception {
-        when(inputReaderUtil.readSelection()).thenReturn(1);
-        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 
         dataBasePrepareService.clearDataBaseEntries();
     }
@@ -66,7 +73,9 @@ public class ParkingDataBaseIT {
     }
 
     @Test
-    public void testParkingACar(){
+    public void testParkingACar() throws Exception{
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         Connection connection = null;
@@ -107,19 +116,19 @@ public class ParkingDataBaseIT {
       //check that a ticket is actually saved in DB and Parking table is updated with availability
         assert(presence);
         assert(parkingAvailabilityUpdated);
-        
     }
 
     
     @Test
-    public void testParkingLotExit(){
+    public void testParkingLotExit() throws Exception{
     	// first the database has to be populated and checked
         testParkingACar();
         
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         
 	   	 try {
-			 Thread.currentThread().sleep(1000);
+			 Thread.currentThread();
+			Thread.sleep(1000);
 		 } catch (InterruptedException e) {
 			 e.printStackTrace();
 		 }
@@ -164,11 +173,12 @@ public class ParkingDataBaseIT {
         //check that a generated fare is actually saved in DB and Parking table is updated with availability
         assert(fareGenerated);
         assert(parkingAvailabilityUpdated);
-        //TODO: check that the fare generated and out time are populated correctly in the database
     }
+    
     
     @Test
     public void testParkingGetPlacesAvailablePlaces(){
+    	when(inputReaderUtil.readSelection()).thenReturn(1);
     	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         String querry = "update parking set AVAILABLE = false where PARKING_NUMBER = 1";
         ParkingSpot parkingSpot = null;
@@ -189,43 +199,10 @@ public class ParkingDataBaseIT {
         
         parkingSpot = parkingService.getNextParkingNumberIfAvailable();
         
-        //assertEquals(2, parkingSpot.getId());
-        //assert(parkingSpot.isAvailable());
+        assertEquals(2, parkingSpot.getId());
+        assert(parkingSpot.isAvailable());
         
     }
     
-    @Disabled
-    @Test
-    public void testParkingGetPlacesNoAvailablePlaces() {
-    	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-
-        String querry = "update parking set AVAILABLE = false where TYPE = 'CAR'";
-        ParkingSpot parkingSpot = null;
-        
-        Connection connection = null;
-        
-        try{
-            connection = dataBaseTestConfig.getConnection();
-
-            //set availability to false for the first car spot
-			connection.prepareStatement(querry).executeUpdate();
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally {
-            dataBaseTestConfig.closeConnection(connection);
-        }
-
-        Exception exception = assertThrows(Exception.class, () -> {parkingService.getNextParkingNumberIfAvailable();});
-        
-        String expectedMessage = "Error fetching parking number from DB. Parking slots might be full";
-        String actualMessage = exception.getMessage();
-        
-        
-        actualMessage = "tt";
-        System.out.println("EXPECTED : " + expectedMessage);
-        System.out.println( "ACTUAL : " + actualMessage);
-        
-        assert(actualMessage.contains(expectedMessage));
-        
-    }
+    
 }

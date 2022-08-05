@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 public class FareCalculatorServiceTest {
@@ -30,13 +33,13 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareCar(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );
-        Date outTime = new Date();
+    	LocalDateTime inTime = LocalDateTime.now();
+        
+        LocalDateTime outTime = inTime.plusHours(1);
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
 
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
+        ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
+        ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
         ticket.setRecuringUser(false);
@@ -45,13 +48,13 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareBike(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );
-        Date outTime = new Date();
+    	LocalDateTime inTime = LocalDateTime.now();
+        
+        LocalDateTime outTime = inTime.plusHours(1);
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
 
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
+        ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
+        ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
         ticket.setRecuringUser(false);
@@ -60,13 +63,13 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareUnkownType(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );
-        Date outTime = new Date();
+    	LocalDateTime inTime = LocalDateTime.now();
+        
+        LocalDateTime outTime = inTime.plusHours(1);
         ParkingSpot parkingSpot = new ParkingSpot(1, null,false);
-
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
+        
+        ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
+        ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(false);
         assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
@@ -74,13 +77,13 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareBikeWithFutureInTime(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() + (  60 * 60 * 1000) );
-        Date outTime = new Date();
+    	LocalDateTime outTime = LocalDateTime.now();
+        
+        LocalDateTime inTime = outTime.plusHours(1);
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
 
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
+        ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
+        ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(false);
         assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
@@ -88,13 +91,15 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareBikeWithLessThanOneHourParkingTime(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  45 * 60 * 1000) );//45 minutes parking time should give 3/4th parking fare
-        Date outTime = new Date();
+    	LocalDateTime inTime = LocalDateTime.now();
+        
+        LocalDateTime outTime = inTime.plusMinutes(45);//45 minutes parking time should give 3/4th parking fare
+    	
+
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
 
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
+        ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
+        ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(false);
         fareCalculatorService.calculateFare(ticket);
@@ -103,13 +108,13 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareCarWithLessThanOneHourParkingTime(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  45 * 60 * 1000) );//45 minutes parking time should give 3/4th parking fare
-        Date outTime = new Date();
+    	LocalDateTime inTime = LocalDateTime.now();
+        
+        LocalDateTime outTime = inTime.plusMinutes(45);//45 minutes parking time should give 3/4th parking fare
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
 
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
+        ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
+        ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(false);
         fareCalculatorService.calculateFare(ticket);
@@ -118,13 +123,14 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareCarWithMoreThanADayParkingTime(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  24 * 60 * 60 * 1000) );//24 hours parking time should give 24 * parking fare per hour
-        Date outTime = new Date();
+    	LocalDateTime inTime = LocalDateTime.now();
+        
+        LocalDateTime outTime = inTime.plusHours(24);//24 hours parking time should give 24 * parking fare per hour
+        
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
 
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
+        ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
+        ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(false);
         fareCalculatorService.calculateFare(ticket);
@@ -133,13 +139,13 @@ public class FareCalculatorServiceTest {
     
     @Test
     public void calculateFareCarWithLessThanThirtyMinutesParkingTime(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  29 * 60 * 1000) );//less than 30 minutes parking time should give 0 parking fare
-        Date outTime = new Date();
+    	LocalDateTime inTime = LocalDateTime.now();
+        
+        LocalDateTime outTime = inTime.plusMinutes(29);//less than 30 minutes parking time should give 0 parking fare
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
 
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
+        ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
+        ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(false);
         fareCalculatorService.calculateFare(ticket);
@@ -148,13 +154,14 @@ public class FareCalculatorServiceTest {
     
     @Test
     public void calculateFareBikeWithLessThanThirtyMinutesParkingTime(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  25 * 60 * 1000) );//less than 30 minutes parking time should give 0 parking fare
-        Date outTime = new Date();
+    	LocalDateTime inTime = LocalDateTime.now();
+        
+        LocalDateTime outTime = inTime.plusMinutes(25);//less than 30 minutes parking time should give 0 parking fare
+
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
 
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
+        ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
+        ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(false);
         fareCalculatorService.calculateFare(ticket);
@@ -163,28 +170,28 @@ public class FareCalculatorServiceTest {
     
     @Test
     public void calculateFareCarWithExactlyThirtyMinutesParkingTime(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  45 * 60 * 1000) );//45 minutes parking time should give 3/4th parking fare
-        Date outTime = new Date();
+    	LocalDateTime inTime = LocalDateTime.now();
+        
+        LocalDateTime outTime = inTime.plusMinutes(30);
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
 
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
+        ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
+        ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(false);
         fareCalculatorService.calculateFare(ticket);
-        assertEquals( (45 * 60 * 1000 / 3600 / 1000 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
+        assertEquals( (30 * 60 * 1000 / 3600 / 1000 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
     
     @Test
     public void calculateFareCarForRecuringUser(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  45 * 60 * 1000) );//45 minutes parking time should give 3/4th parking fare - 5% for recuring
-        Date outTime = new Date();
+    	LocalDateTime inTime = LocalDateTime.now();
+        
+        LocalDateTime outTime = inTime.plusMinutes(45);
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
 
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
+        ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
+        ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(true);
         fareCalculatorService.calculateFare(ticket);

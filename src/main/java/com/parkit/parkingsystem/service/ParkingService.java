@@ -9,6 +9,9 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 public class ParkingService {
@@ -35,14 +38,14 @@ public class ParkingService {
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
 
-                Date inTime = new Date();
+                LocalDateTime inTime = LocalDateTime.now();
                 Ticket ticket = new Ticket();
                 //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, IS_RECUIRING)
                 //ticket.setId(ticketID);
                 ticket.setParkingSpot(parkingSpot);
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(0);
-                ticket.setInTime(inTime);
+                ticket.setInTime(ZonedDateTime.of(inTime, ZoneId.systemDefault()));
                 ticket.setOutTime(null);
                 ticket.setRecuringUser(ticketDAO.isRecuiring(vehicleRegNumber));
                 if (!ticketDAO.isPresent(vehicleRegNumber)) {
@@ -51,7 +54,7 @@ public class ParkingService {
 	                System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
 	                System.out.println("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
                 } else {System.out.println("A vehicule using this registration number is already present");}
-            }
+            }  else {System.out.println("No parking spot available for your vehicule type");}
         }catch(Exception e){
             logger.error("Unable to process incoming vehicle",e);
         }
@@ -71,7 +74,7 @@ public class ParkingService {
             if(parkingNumber > 0){
                 parkingSpot = new ParkingSpot(parkingNumber,parkingType, true);
             }else{
-                throw new Exception("Error fetching parking number from DB. Parking slots might be full");
+            	
             }
         }catch(IllegalArgumentException ie){
             logger.error("Error parsing user input for type of vehicle", ie);
@@ -104,8 +107,8 @@ public class ParkingService {
         try{
             String vehicleRegNumber = getVehichleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-            Date outTime = new Date();
-            ticket.setOutTime(outTime);
+            LocalDateTime outTime = LocalDateTime.now();
+            ticket.setOutTime(ZonedDateTime.of(outTime, ZoneId.systemDefault()));
             fareCalculatorService.calculateFare(ticket);
             if(ticketDAO.updateTicket(ticket)) {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
