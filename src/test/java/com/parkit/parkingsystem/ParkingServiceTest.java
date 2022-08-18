@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 import static org.mockito.Mockito.*;
 
@@ -123,7 +122,7 @@ public class ParkingServiceTest {
     	when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
     	
     	
-    	ParkingSpot parkSpot = parkingService.getNextParkingNumberIfAvailable();
+    	parkingService.getNextParkingNumberIfAvailable();
     	verify(parkingSpotDAO, Mockito.times(1)).getNextAvailableSlot(ParkingType.CAR);
     }
     

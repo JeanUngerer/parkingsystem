@@ -40,9 +40,9 @@ public class TicketDAO {
 		} catch (Exception ex) {
 			logger.error("Error initializing ticket", ex);
 		} finally {
-			dataBaseConfig.closeConnection(con);
-			return false;
+			dataBaseConfig.closeConnection(con);	
 		}
+		return false;
 
 	}
 
@@ -71,9 +71,9 @@ public class TicketDAO {
 		} catch (Exception ex) {
 			logger.error("Error getting ticket", ex);
 		} finally {
-			dataBaseConfig.closeConnection(con);
-			return ticket;
+			dataBaseConfig.closeConnection(con);	
 		}
+		return ticket;
 	}
 
 	public boolean updateTicket(Ticket ticket) {

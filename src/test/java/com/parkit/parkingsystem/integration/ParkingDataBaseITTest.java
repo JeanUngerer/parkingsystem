@@ -16,17 +16,12 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
@@ -36,7 +31,7 @@ import java.sql.ResultSet;
 
 
 @ExtendWith(MockitoExtension.class)
-public class ParkingDataBaseIT {
+public class ParkingDataBaseITTest {
 
     private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
     private static ParkingSpotDAO parkingSpotDAO;
@@ -77,7 +72,9 @@ public class ParkingDataBaseIT {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        
         parkingService.processIncomingVehicle();
+        
         Connection connection = null;
         boolean presence = false;
         boolean parkingAvailabilityUpdated = false;
@@ -90,7 +87,6 @@ public class ParkingDataBaseIT {
             
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				int res = rs.getInt(1);
 				presence = (rs.getInt(1) > 0);
 				
 			}
@@ -147,7 +143,6 @@ public class ParkingDataBaseIT {
             
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				int res = rs.getInt(1);
 				fareGenerated = (rs.getInt(1) > 0);
 				
 			}

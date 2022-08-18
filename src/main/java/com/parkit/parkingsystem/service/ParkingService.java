@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 public class ParkingService {
 
