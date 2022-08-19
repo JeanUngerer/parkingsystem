@@ -199,5 +199,61 @@ public class ParkingDataBaseITTest {
         
     }
     
+    @Test
+    public void testParkingACarReccuringUser() throws Exception{
+    	
+    	// first the database has to be populated and checked
+        testParkingACar();
+        
+        
+	   	 try {
+			 Thread.currentThread();
+			Thread.sleep(1000);
+		 } catch (InterruptedException e) {
+			 e.printStackTrace();
+		 }
+	        
+	   	testParkingLotExit();
+        
+	   	 try {
+			 Thread.currentThread();
+			Thread.sleep(1000);
+		 } catch (InterruptedException e) {
+			 e.printStackTrace();
+		 }
+    	
+    	
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        
+        parkingService.processIncomingVehicle();
+        
+        Connection connection = null;
+        boolean reccuring = false;
+        try{
+            connection = dataBaseTestConfig.getConnection();
+
+            //counts tickets with license plate ABCDEF
+			PreparedStatement ps = connection.prepareStatement("select count(ID) from ticket where VEHICLE_REG_NUMBER =? and RECUIRING_USER = true");
+			ps.setString(1, "ABCDEF");
+            
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				reccuring = (rs.getInt(1) > 0);
+				
+			}
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            dataBaseTestConfig.closeConnection(connection);
+        }
+        
+        
+      //check that a ticket is actually saved in DB and Parking table is updated with availability
+        assert(reccuring);
+
+    }
+    
     
 }
