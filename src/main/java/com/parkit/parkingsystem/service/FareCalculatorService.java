@@ -2,6 +2,7 @@ package com.parkit.parkingsystem.service;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
+import com.parkit.parkingsystem.constants.MillisecondsTimes;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
@@ -44,17 +45,17 @@ public class FareCalculatorService {
     	if (recuring) {
     		return recuringPrice(rate, duration);
     	}
-    	return duration/3600 / 1000 * rate;
+    	return duration/MillisecondsTimes.HOUR_IN_MILLISECONDS * rate;
     }
     
     private boolean freeDuration(long duration) {
-    	if (duration < 30 * 60 * 1000) {
+    	if (duration < 30 * MillisecondsTimes.MINUTES_IN_MILLISECONDS) {
     		return true;
     	}
     	return false;
     }
     	
 	private double recuringPrice(double rate, long duration) {
-		return duration/3600 / 1000 * rate * 95 / 100;
+		return duration/MillisecondsTimes.HOUR_IN_MILLISECONDS * rate * 95 / 100;
     }
 }
