@@ -148,7 +148,7 @@ public class TicketDAOTest {
         
       //check that a getTicket has correct values from db
         
-        assertEquals(price, ticket2.getPrice());
+        assert(price == ticket2.getPrice());
         assertEquals(regPlate, ticket2.getVehicleRegNumber());
         assertEquals(recuring, ticket2.getRecuiringUser());
         assertEquals(inTime, ticket2.getInTime());
