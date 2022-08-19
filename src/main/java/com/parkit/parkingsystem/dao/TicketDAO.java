@@ -40,7 +40,7 @@ public class TicketDAO {
 		} catch (Exception ex) {
 			logger.error("Error initializing ticket", ex);
 		} finally {
-			dataBaseConfig.closeConnection(con);	
+			dataBaseConfig.closeConnection(con);
 		}
 		return false;
 
