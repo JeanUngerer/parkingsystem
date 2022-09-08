@@ -85,9 +85,10 @@ public class TicketDAO {
 	public boolean updateTicket(Ticket ticket) {
 		boolean result = false;
 		Connection con = null;
+		PreparedStatement ps  = null;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
+			ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
 			ps.setDouble(1, ticket.getPrice());
 			ps.setTimestamp(2, new Timestamp(ticket.getOutTime().toInstant().toEpochMilli()));
 			ps.setInt(3, ticket.getId());
@@ -96,6 +97,7 @@ public class TicketDAO {
 		} catch (Exception ex) {
 			logger.error("Error updating ticket info", ex);
 		} finally {
+			dataBaseConfig.closePreparedStatement(ps);
 			dataBaseConfig.closeConnection(con);
 		}
 		return result;
@@ -103,25 +105,28 @@ public class TicketDAO {
 	
 	public boolean isRecuiring (String vehicleRegNumber) {
 		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		boolean result = false;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.IS_RECUIRING);
+			ps = con.prepareStatement(DBConstants.IS_RECUIRING);
 			ps.setString(1, vehicleRegNumber);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			
 			boolean nxt = rs.next();
 			if (nxt) {
 				result = (rs.getInt(1) > 0);
 				
 			}
-			dataBaseConfig.closeResultSet(rs);
-			dataBaseConfig.closePreparedStatement(ps);
+			
 			
 		} catch (Exception ex) {
 			logger.error("Error handling recuiring", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
+			dataBaseConfig.closeResultSet(rs);
+			dataBaseConfig.closePreparedStatement(ps);
 			
 		}
 		return result;
@@ -129,23 +134,26 @@ public class TicketDAO {
 	
 	public boolean isPresent (String vehicleRegNumber) {
 		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		boolean result = false;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.IS_PRESENT);
+			ps = con.prepareStatement(DBConstants.IS_PRESENT);
 			ps.setString(1, vehicleRegNumber);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			if (rs.next()) {
 				result = (rs.getInt(1) > 0);
 			}
-			dataBaseConfig.closeResultSet(rs);
-			dataBaseConfig.closePreparedStatement(ps);
+			
 			
 			
 		} catch (Exception ex) {
 			logger.error("Error handling present", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
+			dataBaseConfig.closeResultSet(rs);
+			dataBaseConfig.closePreparedStatement(ps);
 		}
 		return result;
 	}

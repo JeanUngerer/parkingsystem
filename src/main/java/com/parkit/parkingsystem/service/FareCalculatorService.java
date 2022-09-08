@@ -45,7 +45,7 @@ public class FareCalculatorService {
     	if (recuring) {
     		return recuringPrice(rate, duration);
     	}
-    	return duration/MillisecondsTimes.HOUR_IN_MILLISECONDS * rate;
+    	return duration/(double)MillisecondsTimes.HOUR_IN_MILLISECONDS * rate;
     }
     
     private boolean freeDuration(long duration) {
@@ -56,6 +56,6 @@ public class FareCalculatorService {
     }
     	
 	private double recuringPrice(double rate, long duration) {
-		return duration/MillisecondsTimes.HOUR_IN_MILLISECONDS * rate * 95 / 100;
+		return duration/(double)MillisecondsTimes.HOUR_IN_MILLISECONDS * rate * 95 / 100;
     }
 }

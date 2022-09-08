@@ -2,10 +2,12 @@ package com.parkit.parkingsystem.model;
 
 import java.time.ZonedDateTime;
 
+import com.parkit.parkingsystem.constants.ParkingType;
+
 
 public class Ticket {
     private int id;
-    private ParkingSpot parkingSpot;
+    private ParkingSpot parkingSpot = new ParkingSpot(0, ParkingType.CAR,false );
     private String vehicleRegNumber;
     private double price;
     private ZonedDateTime inTime;
@@ -21,11 +23,14 @@ public class Ticket {
     }
 
     public ParkingSpot getParkingSpot() {
-        return parkingSpot;
+    	ParkingSpot parkingSpotCopy = new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(), parkingSpot.isAvailable());
+        return parkingSpotCopy;
     }
 
-    public void setParkingSpot(ParkingSpot parkingSpot) {
-        this.parkingSpot = parkingSpot;
+    public void setParkingSpot(ParkingSpot parkingSpotIn) {
+    	parkingSpot.setAvailable(parkingSpotIn.isAvailable());
+    	parkingSpot.setId(parkingSpotIn.getId());
+    	parkingSpot.setParkingType(parkingSpotIn.getParkingType());
     }
 
     public String getVehicleRegNumber() {

@@ -103,7 +103,7 @@ public class FareCalculatorServiceTest {
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(false);
         fareCalculatorService.calculateFare(ticket);
-        assertEquals( (45 * MillisecondsTimes.MINUTES_IN_MILLISECONDS / MillisecondsTimes.HOUR_IN_MILLISECONDS * Fare.BIKE_RATE_PER_HOUR) , ticket.getPrice());
+        assertEquals( (45 * MillisecondsTimes.MINUTES_IN_MILLISECONDS / (double)MillisecondsTimes.HOUR_IN_MILLISECONDS * Fare.BIKE_RATE_PER_HOUR) , ticket.getPrice());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class FareCalculatorServiceTest {
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(false);
         fareCalculatorService.calculateFare(ticket);
-        assertEquals( (45 * MillisecondsTimes.MINUTES_IN_MILLISECONDS / MillisecondsTimes.HOUR_IN_MILLISECONDS * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
+        assertEquals( (45 * MillisecondsTimes.MINUTES_IN_MILLISECONDS / (double)MillisecondsTimes.HOUR_IN_MILLISECONDS * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
 
     @Test
@@ -180,7 +180,7 @@ public class FareCalculatorServiceTest {
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(false);
         fareCalculatorService.calculateFare(ticket);
-        assertEquals( (30 * MillisecondsTimes.MINUTES_IN_MILLISECONDS / MillisecondsTimes.HOUR_IN_MILLISECONDS * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
+        assertEquals( (30 * MillisecondsTimes.MINUTES_IN_MILLISECONDS / (double)MillisecondsTimes.HOUR_IN_MILLISECONDS * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
     
     @Test
@@ -195,7 +195,7 @@ public class FareCalculatorServiceTest {
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(true);
         fareCalculatorService.calculateFare(ticket);
-        assertEquals( (45 * MillisecondsTimes.MINUTES_IN_MILLISECONDS / MillisecondsTimes.HOUR_IN_MILLISECONDS * 95 / 100 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
+        assertEquals( (45 * MillisecondsTimes.MINUTES_IN_MILLISECONDS /(double)MillisecondsTimes.HOUR_IN_MILLISECONDS * 95 / 100 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
 
     
@@ -211,7 +211,7 @@ public class FareCalculatorServiceTest {
         ticket.setParkingSpot(parkingSpot);
         ticket.setRecuringUser(true);
         fareCalculatorService.calculateFare(ticket);
-        assertEquals( (45 * MillisecondsTimes.MINUTES_IN_MILLISECONDS / MillisecondsTimes.HOUR_IN_MILLISECONDS * 95 / 100 * Fare.BIKE_RATE_PER_HOUR) , ticket.getPrice());
+        assertEquals( (45 * MillisecondsTimes.MINUTES_IN_MILLISECONDS / (double)MillisecondsTimes.HOUR_IN_MILLISECONDS * 95 / 100 * Fare.BIKE_RATE_PER_HOUR) , ticket.getPrice());
    }
 
 }
