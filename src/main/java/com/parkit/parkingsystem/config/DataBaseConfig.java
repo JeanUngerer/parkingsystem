@@ -1,19 +1,51 @@
 package com.parkit.parkingsystem.config;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.sql.*;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.jasypt.properties.EncryptableProperties;
 
 public class DataBaseConfig {
 
     private static final Logger logger = LogManager.getLogger("DataBaseConfig");
 
-    public Connection getConnection() throws ClassNotFoundException, SQLException {
+    public Connection getConnection() throws ClassNotFoundException, SQLException, IOException {
+    	StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+    	Properties props = new EncryptableProperties(encryptor);
+    	FileInputStream propsFile = null;
+    	try {
+    		propsFile = new FileInputStream("src/main/resources/connect.properties");
+			props.load(propsFile);
+			
+		} catch (FileNotFoundException e) {
+			logger.error("Error while getting connection infos",e);
+		} catch (IOException e) {
+			logger.error("Error while getting connection infos",e);
+		} finally {
+			if (propsFile != null) {
+				propsFile.close();
+			}
+		}
+    	String datasourceUrl = props.getProperty("datasource.url");
+    	String datasourceUsername = props.getProperty("datasource.username");
+    	String datasourcePassword = props.getProperty("datasource.password");
+    	String datasourceDriver = props.getProperty("datasource.driver");
+    	
+    	
         logger.info("Create DB connection");
-        Class.forName("com.mysql.cj.jdbc.Driver");
+        Class.forName(datasourceDriver);
         return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/prod?serverTimezone=Europe/Paris","root","admin1");
+        		datasourceUrl,datasourceUsername,datasourcePassword);
     }
     
 

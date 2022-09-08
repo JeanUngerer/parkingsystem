@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -84,6 +85,7 @@ public class TicketDAOTest {
 		
 		
 		ticketDAO.saveTicket(ticket);
+		//ticketDAO.saveTicket(ticket);
 		
 		Ticket ticket2 = ticketDAO.getTicket("AAAABBBB");
 		
@@ -140,7 +142,7 @@ public class TicketDAOTest {
         }      
       //check that a ticket is saved in DB with correct values
 
-        assert(price == ticket.getPrice());
+        assertTrue(price == ticket.getPrice());
         assertEquals(regPlate, ticket.getVehicleRegNumber());
         assertEquals(recuring, ticket.getRecuiringUser());
         assertEquals(inTime, ticket.getInTime());
@@ -148,14 +150,14 @@ public class TicketDAOTest {
         
       //check that a getTicket has correct values from db
         
-        assert(price == ticket2.getPrice());
+        assertTrue(price == ticket2.getPrice());
         assertEquals(regPlate, ticket2.getVehicleRegNumber());
         assertEquals(recuring, ticket2.getRecuiringUser());
         assertEquals(inTime, ticket2.getInTime());
         assertEquals(outTime, ticket2.getOutTime());
         
       //check that isRecuiring has correct value from db  
-        
+
         assertEquals(recuring, ticketDAO.isRecuiring("AAAABBBB"));
 	}
 	

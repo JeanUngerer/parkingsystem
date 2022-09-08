@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
@@ -110,15 +111,23 @@ public class ParkingDataBaseITTest {
             dataBaseTestConfig.closeConnection(connection);
         }
       //check that a ticket is actually saved in DB and Parking table is updated with availability
-        assert(presence);
-        assert(parkingAvailabilityUpdated);
+        assertTrue(presence);
+        assertTrue(parkingAvailabilityUpdated);
+    }
+    
+    private void populatePark() throws Exception{
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        
+        parkingService.processIncomingVehicle();
     }
 
     
     @Test
     public void testParkingLotExit() throws Exception{
     	// first the database has to be populated and checked
-        testParkingACar();
+        populatePark(); //NON -> private methods pour peupler
         
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         
@@ -166,8 +175,8 @@ public class ParkingDataBaseITTest {
             dataBaseTestConfig.closeConnection(connection);
         }
         //check that a generated fare is actually saved in DB and Parking table is updated with availability
-        assert(fareGenerated);
-        assert(parkingAvailabilityUpdated);
+        assertTrue(fareGenerated);
+        assertTrue(parkingAvailabilityUpdated);
     }
     
     
@@ -195,15 +204,28 @@ public class ParkingDataBaseITTest {
         parkingSpot = parkingService.getNextParkingNumberIfAvailable();
         
         assertEquals(2, parkingSpot.getId());
-        assert(parkingSpot.isAvailable());
+        assertTrue(parkingSpot.isAvailable());
         
+    }
+    
+    private void exitPark() {
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        
+	   	 try {
+			 Thread.currentThread();
+			Thread.sleep(1000);
+		 } catch (InterruptedException e) {
+			 e.printStackTrace();
+		 }
+	        
+        parkingService.processExitingVehicle();
     }
     
     @Test
     public void testParkingACarReccuringUser() throws Exception{
     	
     	// first the database has to be populated and checked
-        testParkingACar();
+        populatePark();
         
         
 	   	 try {
@@ -213,7 +235,7 @@ public class ParkingDataBaseITTest {
 			 e.printStackTrace();
 		 }
 	        
-	   	testParkingLotExit();
+	   	exitPark();
         
 	   	 try {
 			 Thread.currentThread();
@@ -250,8 +272,8 @@ public class ParkingDataBaseITTest {
         }
         
         
-      //check that a ticket is actually saved in DB and Parking table is updated with availability
-        assert(reccuring);
+      //check that a ticket is actually saved in DB and Ticket RECUIRING_USER is set to true
+        assertTrue(reccuring);
 
     }
     
