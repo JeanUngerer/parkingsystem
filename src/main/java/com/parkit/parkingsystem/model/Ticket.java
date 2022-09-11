@@ -1,15 +1,18 @@
 package com.parkit.parkingsystem.model;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.ZonedDateTime;
+
+import com.parkit.parkingsystem.constants.ParkingType;
+
 
 public class Ticket {
     private int id;
-    private ParkingSpot parkingSpot;
+    private ParkingSpot parkingSpot = new ParkingSpot(0, ParkingType.CAR,false );
     private String vehicleRegNumber;
     private double price;
-    private Date inTime;
-    private Date outTime;
+    private ZonedDateTime inTime;
+    private ZonedDateTime outTime;
+    private boolean recuringUser;
 
     public int getId() {
         return id;
@@ -20,11 +23,14 @@ public class Ticket {
     }
 
     public ParkingSpot getParkingSpot() {
-        return parkingSpot;
+    	ParkingSpot parkingSpotCopy = new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(), parkingSpot.isAvailable());
+        return parkingSpotCopy;
     }
 
-    public void setParkingSpot(ParkingSpot parkingSpot) {
-        this.parkingSpot = parkingSpot;
+    public void setParkingSpot(ParkingSpot parkingSpotIn) {
+    	parkingSpot.setAvailable(parkingSpotIn.isAvailable());
+    	parkingSpot.setId(parkingSpotIn.getId());
+    	parkingSpot.setParkingType(parkingSpotIn.getParkingType());
     }
 
     public String getVehicleRegNumber() {
@@ -43,19 +49,27 @@ public class Ticket {
         this.price = price;
     }
 
-    public Date getInTime() {
+    public ZonedDateTime getInTime() {
         return inTime;
     }
 
-    public void setInTime(Date inTime) {
+    public void setInTime(ZonedDateTime inTime) {
         this.inTime = inTime;
     }
 
-    public Date getOutTime() {
+    public ZonedDateTime getOutTime() {
         return outTime;
     }
 
-    public void setOutTime(Date outTime) {
+    public void setOutTime(ZonedDateTime outTime) {
         this.outTime = outTime;
+    }
+    
+    public boolean getRecuiringUser() {
+        return recuringUser;
+    }
+
+    public void setRecuringUser(boolean recuring) {
+        this.recuringUser = recuring;
     }
 }

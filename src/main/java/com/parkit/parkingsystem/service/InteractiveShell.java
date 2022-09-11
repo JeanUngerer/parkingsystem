@@ -21,6 +21,7 @@ public class InteractiveShell {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
         while(continueApp){
+        	try {
             loadMenu();
             int option = inputReaderUtil.readSelection();
             switch(option){
@@ -39,6 +40,11 @@ public class InteractiveShell {
                 }
                 default: System.out.println("Unsupported option. Please enter a number corresponding to the provided menu");
             }
+        	}catch(Exception e) {
+        		System.out.println("Unsupported option. Please enter a number corresponding to the provided menu");
+        		logger.error("Unsupported option", e);
+        	}
+        	
         }
     }
 
