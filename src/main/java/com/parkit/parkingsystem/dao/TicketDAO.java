@@ -30,8 +30,6 @@ public class TicketDAO {
 			
 			con = dataBaseConfig.getConnection();
 			ps = con.prepareStatement(DBConstants.SAVE_TICKET);
-			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, RECUIRING_USER)
-			// ps.setInt(1,ticket.getId());
 			ps.setInt(1, ticket.getParkingSpot().getId());
 			ps.setString(2, ticket.getVehicleRegNumber());
 			ps.setDouble(3, ticket.getPrice());
@@ -57,7 +55,6 @@ public class TicketDAO {
 		try {
 			con = dataBaseConfig.getConnection();
 			ps = con.prepareStatement(DBConstants.GET_TICKET);
-			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
 			ps.setString(1, vehicleRegNumber);
 			rs = ps.executeQuery();
 			if (rs.next()) {
