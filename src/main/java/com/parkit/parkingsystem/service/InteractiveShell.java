@@ -40,7 +40,10 @@ public class InteractiveShell {
                 }
                 default: System.out.println("Unsupported option. Please enter a number corresponding to the provided menu");
             }
-        	}catch(Exception e) {System.out.println("Unsupported option. Please enter a number corresponding to the provided menu");}
+        	}catch(Exception e) {
+        		System.out.println("Unsupported option. Please enter a number corresponding to the provided menu");
+        		logger.error("Unsupported option", e);
+        	}
         	
         }
     }
