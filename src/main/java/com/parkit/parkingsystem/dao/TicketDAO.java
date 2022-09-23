@@ -65,7 +65,11 @@ public class TicketDAO {
 				ticket.setVehicleRegNumber(vehicleRegNumber);
 				ticket.setPrice(rs.getDouble(3));
 				ticket.setInTime(ZonedDateTime.of(rs.getTimestamp(4).toLocalDateTime(), ZoneId.systemDefault()));
-				ticket.setOutTime(ZonedDateTime.of(rs.getTimestamp(5).toLocalDateTime(), ZoneId.systemDefault()));
+				ZonedDateTime outTime = ZonedDateTime.of(rs.getTimestamp(5).toLocalDateTime(), ZoneId.systemDefault());
+				if (outTime != null) {
+					ticket.setOutTime(outTime);
+				}
+				
 				ticket.setRecuringUser(rs.getBoolean(7));
 			}
 
